@@ -39,12 +39,13 @@ function addToDo(event) {
     }
     else {
         // adding to server
-        axios.post(`http://localhost:3000/todo`, {
-            text: toDoInput.value
+        axios.post('http://localhost:3000/todo', {
+            text: toDoInput.value  
         })
             .then((response) => {
+                console.log(response.data);
                 response.data.data.map((value) => {
-                    newToDo.innerText = value;
+                    newToDo.innerText = value.data.message
                     newToDo.classList.add('todo-item');
                     toDoDiv.appendChild(newToDo);
                     toDoDiv.appendChild(checked);
@@ -111,7 +112,7 @@ function getTodos() {
                 toDoList.innerHTML +=
                     `<div class="todo ${savedTheme}-todo">
                 <div  class="todo-item">
-               <li>${value}</li></div>
+               <li>${value.text}</li></div>
                 <button class="check-btn"><i class="fas fa-check"></i></button>
                 <button class="delete-btn"><i class="fas fa-trash"></i></button>
                </div>`
