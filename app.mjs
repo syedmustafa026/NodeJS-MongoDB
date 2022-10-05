@@ -21,15 +21,17 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/todo', (req, res) => {
-
+    console.log(req.body.text);
     todoModel.create({ text: req.body.text }, (err, saved) => {
         if (!err) {
-            console.log(saved);
-
+            console.log("jaraha", saved)
             res.send({
                 message: "your todo is saved"
             })
         } else {
+
+            console.log(err);
+
             res.status(500).send({
                 message: "server error"
             })
@@ -59,7 +61,7 @@ app.listen(port, () => {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-let dbURI = 'mongodb+srv://dbuser:dbpassword@cluster0.flvokf8.mongodb.net/myDatabase?retryWrites=true&w=majorityx`';
+let dbURI = 'mongodb+srv://dbuser:dbpassword@cluster0.flvokf8.mongodb.net/myDatabase?retryWrites=true&w=majority    ';
 mongoose.connect(dbURI);
 
 
