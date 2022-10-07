@@ -1,6 +1,7 @@
 
 // Selectors
 
+
 const toDoInput = document.querySelector('.todo-input');
 const toDoBtn = document.querySelector('.todo-btn');
 const toDoList = document.querySelector('.todo-list');
@@ -38,40 +39,18 @@ function addToDo(event) {
         alert("You must write something!");
     }
     else {
+        toDoList.innerHTML +=
+            `<div class="todo ${savedTheme}-todo">
+                    <div  class="todo-item">
+                   <li>${toDoInput.value}</li></div>
+                     <button class="check-btn"><i class="fas fa-check"></i></button>
+                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                </div>`
         // adding to server
         axios.post('http://localhost:3000/todo', {
-            text: toDoInput.value  
+            text: toDoInput.value
         })
-            .then((response) => {
-                console.log(response.data);
-                response.data.data.map((value) => {
-                    newToDo.innerText = value.data.message
-                    newToDo.classList.add('todo-item');
-                    toDoDiv.appendChild(newToDo);
-                    toDoDiv.appendChild(checked);
-                    toDoDiv.appendChild(deleted);
-            //         `<div class="todo ${savedTheme}-todo">
-            //     <div  class="todo-item">
-            //    <li>${value}</li></div>
-            //     <button class="check-btn"><i class="fas fa-check"></i></button>
-            //     <button class="delete-btn"><i class="fas fa-trash"></i></button>
-            //    </div>`
-                })
-            })
             .catch((err) => console.log("err", err))
-        // check btn;
-        const checked = document.createElement('button');
-        checked.innerHTML = '<i class="fas fa-check"></i>';
-        checked.classList.add('check-btn', `${savedTheme}-button`);
-        // delete btn;
-        const deleted = document.createElement('button');
-        deleted.innerHTML = '<i class="fas fa-trash"></i>';
-        deleted.classList.add('delete-btn', `${savedTheme}-button`);
-
-
-        // Append to list;
-        toDoList.appendChild(toDoDiv);
-
         // CLearing the input;
         toDoInput.value = '';
     }
@@ -80,7 +59,10 @@ function addToDo(event) {
 
 
 function deletecheck(event) {
-
+console.log("deleted");
+axios.delete(`http://localhost:3000/todo/${text}`, {
+    text: toDoInput.value
+})
     // console.log(event.target);
     const item = event.target;
 
@@ -103,12 +85,14 @@ function deletecheck(event) {
         item.parentElement.classList.toggle("completed");
     }
 }
-
+console.log();
 function getTodos() {
     // adding to server
     axios.get(`http://localhost:3000/todos`)
         .then((response) => {
-            response.data.data.map((value,id) => {
+            response.data.data.map((value, id) => {
+                var todoID = value._id
+                console.log(todoID);
                 toDoList.innerHTML +=
                     `<div class="todo ${savedTheme}-todo">
                 <div  class="todo-item">
@@ -127,6 +111,7 @@ function getTodos() {
 // GET /todo/id
 // PUT /todo/id
 // DELETE /todo/id
+
 function removeLocalTodos(todo) {
     //Check: if item/s are there;
     let todos;
