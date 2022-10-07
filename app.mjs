@@ -29,9 +29,7 @@ app.post('/todo', (req, res) => {
                 message: "your todo is saved"
             })
         } else {
-
             console.log(err);
-
             res.status(500).send({
                 message: "server error"
             })
@@ -54,6 +52,34 @@ app.get('/todos', (req, res) => {
         }
     });
 })
+app.delete(`/todo/:id`, (req, res) => {
+
+    todoModel.deleteOne({_id: req.params.id}, (err, data) => {
+        if (!err) {
+            res.send({
+                message: "your todo is deleted" + data
+            })
+        } else {
+            res.status(500).send({
+                message: "server error"
+            })
+        }
+    });
+})
+// app.delete('/todo', (req, res) => {
+
+//     todoModel.findByIdAndDelete(req.params._id)
+//         .then((todo) => {
+//             if (!todo) {
+//                 req.status(500).send({
+//                     message: "todo not found with id" + req.params._id
+//                 })
+//             }
+//             else {
+//                 res.send({ message: "Todo deleted successfully" })
+//             }
+//         })
+// })
 
 app.listen(port, () => {
     console.log(`Server app is listening on port ${port}`)
