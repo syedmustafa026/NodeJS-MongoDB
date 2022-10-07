@@ -57,7 +57,7 @@ app.delete(`/todo/:id`, (req, res) => {
     todoModel.deleteOne({_id: req.params.id}, (err, data) => {
         if (!err) {
             res.send({
-                message: "your todo is deleted" + data
+                message: "your todo is deleted" 
             })
         } else {
             res.status(500).send({
