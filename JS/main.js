@@ -8,7 +8,7 @@ const toDoList = document.querySelector('.todo-list');
 const standardTheme = document.querySelector('.standard-theme');
 const lightTheme = document.querySelector('.light-theme');
 const darkerTheme = document.querySelector('.darker-theme');
-
+let postID
 // Event Listeners
 
 toDoBtn.addEventListener('click', addToDo);
@@ -29,12 +29,6 @@ function addToDo(event) {
     // Prevents form from submitting / Prevents form from relaoding;
     event.preventDefault();
 
-    // toDo DIV;
-    const toDoDiv = document.createElement("div");
-    toDoDiv.classList.add('todo', `${savedTheme}-todo`);
-
-    // Create LI
-    const newToDo = document.createElement('li');
     if (toDoInput.value === '') {
         alert("You must write something!");
     }
@@ -58,52 +52,51 @@ function addToDo(event) {
 }
 
 
-function deletecheck(event) {
-console.log("deleted");
-axios.delete(`http://localhost:3000/todo/${text}`, {
-    text: toDoInput.value
-})
-    // console.log(event.target);
-    const item = event.target;
+function deletecheck(id) {
 
-    // delete
-    if (item.classList[0] === 'delete-btn') {
-        // item.parentElement.remove();
-        // animation
-        item.parentElement.classList.add("fall");
+    console.log(id);
 
-        //removing local todos;
-        removeLocalTodos(item.parentElement);
+//     axios.get(`http://localhost:3000/todos`)
+//         .then((response) => {
+//            response.data.data.filter((val,id)=>{
+// console.log(val._id);
+//            })
+//         })
+//     axios.delete(`http://localhost:3000/todo/${text}`, {
+//         text: toDoInput.value
+//     })
+//     // console.log(event.target);
+//     const item = event.target;
 
-        item.parentElement.addEventListener('transitionend', function () {
-            item.parentElement.remove();
-        })
-    }
+//     // delete
+//     if (item.classList[0] === 'delete-btn') {
+//         item.parentElement.classList.add("fall");
+//         item.parentElement.addEventListener('transitionend', function () {
+//             item.parentElement.remove();
+//         })
+//     }
 
-    // check
-    if (item.classList[0] === 'check-btn') {
-        item.parentElement.classList.toggle("completed");
-    }
+//     // check
+//     if (item.classList[0] === 'check-btn') {
+//         item.parentElement.classList.toggle("completed");
+//     }
 }
-console.log();
 function getTodos() {
     // adding to server
     axios.get(`http://localhost:3000/todos`)
         .then((response) => {
             response.data.data.map((value, id) => {
-                var todoID = value._id
-                console.log(todoID);
+                id = value._id
                 toDoList.innerHTML +=
                     `<div class="todo ${savedTheme}-todo">
                 <div  class="todo-item">
                <li>${value.text}</li></div>
                 <button class="check-btn"><i class="fas fa-check"></i></button>
-                <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                <button class="delete-btn" onclick='deletecheck("${value._id}")'><i class="fas fa-trash"></i></button>
                </div>`
             })
         })
         .catch((err) => console.log("err", err))
-
 }
 
 // POST /todo
@@ -112,22 +105,7 @@ function getTodos() {
 // PUT /todo/id
 // DELETE /todo/id
 
-function removeLocalTodos(todo) {
-    //Check: if item/s are there;
-    let todos;
-    if (localStorage.getItem('todos') === null) {
-        todos = [];
-    }
-    else {
-        todos = JSON.parse(localStorage.getItem('todos'));
-    }
 
-    const todoIndex = todos.indexOf(todo.children[0].innerText);
-    // console.log(todoIndex);
-    todos.splice(todoIndex, 1);
-    // console.log(todos);
-    localStorage.setItem('todos', JSON.stringify(todos));
-}
 
 // Change theme function:
 function changeTheme(color) {
